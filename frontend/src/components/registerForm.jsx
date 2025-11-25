@@ -1,8 +1,13 @@
 import InputFieldSetWithValidation from "./inputFieldSetWithValidation";
 import { passwordValidator, userNameValidator } from "../utils/validators";
 import { Link } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "../query/registerQuery";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 function RegisterForm() {
+    const navigate = useNavigate();
     const confirmPasswordValidator = (value) => {
         const password = document.querySelector(
             "input[id=password-input]",
@@ -10,10 +15,27 @@ function RegisterForm() {
         return value === password;
     };
 
+    const mutation = useMutation({
+        mutationFn: registerUser,
+        onSuccess: () => {
+            toast.success("Registration successful! Please log in.");
+            navigate("/auth/login");
+        },
+        onError: (error) => {
+            toast.error(error.response.data.message);
+        },
+    });
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        console.log("register form submitted with +", formData);
+        const data = {
+            userName: formData.get("username-input"),
+            email: formData.get("email-input"),
+            password: formData.get("password-input"),
+        };
+
+        mutation.mutate(data);
     };
 
     return (

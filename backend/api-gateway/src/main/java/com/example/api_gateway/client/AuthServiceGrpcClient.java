@@ -16,8 +16,8 @@ public class AuthServiceGrpcClient {
     public Mono<ValidationResponse> validateToken(String accessToken) {
         return Mono.fromCallable(() -> {
             ValidationRequest request = ValidationRequest.newBuilder()
-                .setAccessToken(accessToken)
-                .build();
+                    .setAccessToken(accessToken)
+                    .build();
 
             return authServiceStub.validateToken(request);
         });

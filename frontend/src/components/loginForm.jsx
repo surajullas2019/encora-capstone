@@ -1,13 +1,34 @@
-import InputFieldSetWithValidation from "./inputFieldSetWithValidation";
-import { passwordValidator } from "../utils/validators";
+import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router";
+import { toast } from "sonner";
+import { loginUser } from "../query/loginQuery";
+import { passwordValidator } from "../utils/validators";
+import { useNavigate } from "react-router";
+import InputFieldSetWithValidation from "./inputFieldSetWithValidation";
 
 function LoginForm() {
+    const navigate = useNavigate();
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        console.log("login form submitted with +", formData);
+        const data = {
+            email: formData.get("email-input"),
+            password: formData.get("password-input"),
+        };
+        mutation.mutate(data);
     };
+
+    const mutation = useMutation({
+        mutationFn: loginUser,
+        onSuccess: (data) => {
+            localStorage.setItem("accessToken", data.accessToken);
+            toast.success("Login successful!");
+            navigate("/products");
+        },
+        onError: (error) => {
+            toast.error(error.response.data.message);
+        },
+    });
 
     return (
         <div className="registration-form-container col-span-1 col-start-2 place-self-center w-[50%] p-6 rounded-lg">
@@ -32,7 +53,7 @@ function LoginForm() {
                     validationHint="password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
                 />
 
-                <Link to={"/auth/login"}>
+                <Link to={"/auth/register"}>
                     <button className="btn btn-link">
                         have no account? Register here.
                     </button>

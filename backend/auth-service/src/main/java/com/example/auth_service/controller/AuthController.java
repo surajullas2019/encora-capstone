@@ -2,6 +2,7 @@ package com.example.auth_service.controller;
 
 import com.example.auth_service.dto.ErrorResponseDto;
 import com.example.auth_service.dto.LoginRequestDto;
+import com.example.auth_service.dto.LoginResponseDto;
 import com.example.auth_service.dto.RegisterRequestDto;
 import com.example.auth_service.dto.RegisterResponseDto;
 import com.example.auth_service.service.AuthService;
@@ -22,10 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(
-    name = "Authentication",
-    description = "APIs for user registration and authentication"
-)
+@Tag(name = "Authentication", description = "APIs for user registration and authentication")
 public class AuthController {
 
     private AuthService authService;
@@ -35,96 +33,41 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @Operation(
-        summary = "Register new user",
-        description = "Creates a new user account with email and username"
-    )
-    @ApiResponses(
-        value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "User successfully registered",
-                content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = RegisterResponseDto.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "400",
-                description = "Email already exists",
-                content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponseDto.class)
-                )
-            ),
-        }
-    )
+    @Operation(summary = "Register new user", description = "Creates a new user account with email and username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User successfully registered", content = @Content(mediaType = "application/json", schema = @Schema(implementation = RegisterResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Email already exists", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))),
+    })
     public ResponseEntity<RegisterResponseDto> registerUser(
-        @Parameter(
-            description = "User registration request data",
-            required = true
-        ) @RequestBody RegisterRequestDto requestDto
-    ) {
+            @Parameter(description = "User registration request data", required = true) @RequestBody RegisterRequestDto requestDto) {
         RegisterResponseDto response = authService.registerUser(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/login")
-    @Operation(
-        summary = "User login",
-        description = "Authenticates user and returns access token as HTTP-only cookie"
-    )
-    @ApiResponses(
-        value = {
-            @ApiResponse(
-                responseCode = "200",
-                description = "Successfully authenticated and cookie set",
-                headers = @Header(
-                    name = "Set-Cookie",
-                    description = "HTTP-only access token cookie",
-                    schema = @Schema(
-                        type = "string",
-                        example = "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; Path=/;" +
-                            " HttpOnly; SameSite=Lax"
-                    )
-                )
-            ),
-            @ApiResponse(
-                responseCode = "400",
-                description = "User does not exist",
-                content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponseDto.class)
-                )
-            ),
-            @ApiResponse(
-                responseCode = "401",
-                description = "Invalid credentials",
-                content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorResponseDto.class)
-                )
-            ),
-        }
-    )
-    public ResponseEntity<Void> loginUser(
-        @Parameter(
-            description = "User login credentials",
-            required = true
-        ) @RequestBody LoginRequestDto loginRequestDto
-    ) {
+    @Operation(summary = "User login", description = "Authenticates user and returns access token as HTTP-only cookie")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully authenticated and cookie set", headers = @Header(name = "Set-Cookie", description = "HTTP-only access token cookie", schema = @Schema(type = "string", example = "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; Path=/;"
+                    +
+                    " HttpOnly; SameSite=Lax"))),
+            @ApiResponse(responseCode = "400", description = "User does not exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponseDto.class))),
+    })
+    public ResponseEntity<LoginResponseDto> loginUser(
+            @Parameter(description = "User login credentials", required = true) @RequestBody LoginRequestDto loginRequestDto) {
         String accessToken = authService.generateAccessTokenOnLogin(
-            loginRequestDto
-        );
+                loginRequestDto);
         ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
-            .httpOnly(true)
-            .secure(false)
-            .path("/")
-            .sameSite("Lax")
-            .build();
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .sameSite("Lax")
+                .build();
+
+        LoginResponseDto responseBody = new LoginResponseDto(accessToken);
 
         return ResponseEntity.ok()
-            .header(HttpHeaders.SET_COOKIE, cookie.toString())
-            .build();
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(responseBody);
     }
 }

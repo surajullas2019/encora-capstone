@@ -22,6 +22,7 @@ function InputFieldSetWithValidation({
             <input
                 type={type}
                 id={label.toLowerCase() + "-input"}
+                name={label.toLowerCase() + "-input"}
                 className="input validator w-full"
                 placeholder={placeholder}
                 required={required}

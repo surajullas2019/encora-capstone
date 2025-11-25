@@ -36,7 +36,7 @@ public class AuthService {
         .ifPresent(
             user -> {
               throw new EmailAlreadyPresentException(
-                  "the user with email :" + user.getEmail() + "is allready present");
+                  "the user with email :" + user.getEmail() + " already present");
             });
 
     final String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
@@ -59,11 +59,10 @@ public class AuthService {
   }
 
   public String generateAccessTokenOnLogin(LoginRequestDto loginRequestDto) {
-    User user =
-        userRepository
-            .findByEmail(loginRequestDto.getEmail())
-            .orElseThrow(
-                () -> new InvalidCredentialsException("the email or password is incorrect"));
+    User user = userRepository
+        .findByEmail(loginRequestDto.getEmail())
+        .orElseThrow(
+            () -> new InvalidCredentialsException("the email or password is incorrect"));
 
     if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
       throw new InvalidCredentialsException("the email or password is incorrect");

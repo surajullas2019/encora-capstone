@@ -1,19 +1,48 @@
 import { Link } from "react-router";
+import { useUser } from "../provider/userProvider";
+import AvaterPlaceholder from "./avatarPlaceholder";
 
 function Navbar() {
+    const { user, logout } = useUser();
+    const logoutHandler = () => {
+        logout();
+    };
     return (
         <>
-            <div className="navbar bg-base-100 shadow-lg">
+            <div className="navbar bg-base-100 shadow-lg px-10">
                 <div className="flex-1">
                     <Link className="btn btn-ghost text-xl" to={"/"}>
                         Capstone
                     </Link>
                 </div>
-                <div className="flex-none">
-                    <Link to={"/auth/login"}>
-                        <button className="btn btn-primary">Login</button>
-                    </Link>
-                </div>
+                {user ? (
+                    <div className="dropdown dropdown-end">
+                        <div
+                            tabIndex={0}
+                            role="button"
+                            className="cursor-pointer"
+                        >
+                            <AvaterPlaceholder name={user.userName} />
+                        </div>
+                        <ul
+                            tabIndex="-1"
+                            className="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-sm"
+                        >
+                            <li>
+                                <Link to={"/profile"}>profile</Link>
+                            </li>
+                            <li>
+                                <div onClick={logoutHandler}>logout</div>
+                            </li>
+                        </ul>
+                    </div>
+                ) : (
+                    <div className="flex-none">
+                        <Link to={"/auth/login"}>
+                            <button className="btn btn-primary">Login</button>
+                        </Link>
+                    </div>
+                )}
             </div>
         </>
     );

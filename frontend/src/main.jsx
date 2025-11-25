@@ -6,20 +6,31 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import RegisterPage from "./pages/auth/RegisterPage.jsx";
 import LayoutWithNavbar from "./layout/LayoutWithNavbar.jsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { UserProvider } from "./provider/userProvider.jsx";
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<LayoutWithNavbar />}>
-                    <Route path="/" element={<App />}></Route>
-                    <Route path="/auth/login" element={<LoginPage />}></Route>
-                    <Route
-                        path="/auth/register"
-                        element={<RegisterPage />}
-                    ></Route>
-                </Route>
-            </Routes>
-        </BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+            <UserProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<LayoutWithNavbar />}>
+                            <Route path="/" element={<App />}></Route>
+                            <Route
+                                path="/auth/login"
+                                element={<LoginPage />}
+                            ></Route>
+                            <Route
+                                path="/auth/register"
+                                element={<RegisterPage />}
+                            ></Route>
+                        </Route>
+                    </Routes>
+                </BrowserRouter>
+            </UserProvider>
+        </QueryClientProvider>
     </StrictMode>,
 );
