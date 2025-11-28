@@ -9,6 +9,11 @@ import LayoutWithNavbar from "./layout/LayoutWithNavbar.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UserProvider } from "./provider/userProvider.jsx";
 import ProductsPage from "./components/ProductsPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ProfileLayout from "./pages/ProfileLayout.jsx";
+import AccountPage from "./pages/AccountPage.jsx";
+import EditPasswordPage from "./pages/EditPasswordPage.jsx";
+import OrderHistoryPage from "./pages/OrderHistoryPage.jsx";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -20,6 +25,17 @@ createRoot(document.getElementById("root")).render(
                         <Route path="/" element={<LayoutWithNavbar />}>
                             <Route path="/" element={<App />}></Route>
                             <Route path="/products" element={<ProductsPage />} />
+                            <Route path="/profile" element={
+
+                                    <ProfileLayout />
+                                
+                            }>
+                                <Route path="account" element={<AccountPage />} />
+                                <Route path="account/editpassword" element={<EditPasswordPage />} />
+                                <Route path="orderhistory" element={<OrderHistoryPage />} />
+                            </Route>
+
+                            
                             <Route
                                 path="/auth/login"
                                 element={<LoginPage />}
