@@ -27,6 +27,24 @@ spring:
                           filters:
                               - StripPrefix=3
 
+                        # Public Product Routes (GET only) - NO JwtValidation
+                        - id: product-service-public
+                          uri: http://localhost:8085
+                          predicates:
+                              - Path=/api/v1/product/**
+                              - Method=GET
+                          filters:
+                              - StripPrefix=3
+
+                        # Secured Product Routes (POST, PUT, DELETE, etc.) - HAS JwtValidation
+                        - id: product-service-secured
+                          uri: http://localhost:8085
+                          predicates:
+                              - Path=/api/v1/product/**
+                          filters:
+                              - StripPrefix=3
+                              - JwtValidation
+
                         # Debug route
                         - id: debug-echo-route
                           uri: https://postman-echo.com
