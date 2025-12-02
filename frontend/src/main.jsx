@@ -20,6 +20,8 @@ import CheckoutPage from "./pages/CheckoutPage.jsx";
 import ProductDescriptionPage from "./pages/ProductDescriptionPage.jsx";
 import { ProductFilterProvider } from "./provider/ProductFilterProvider.jsx";
 import ProfileOverview from "./pages/profile/ProfileOverview.jsx";
+import FakePaymentPage from "./pages/FakePaymentPage.jsx";
+import PaymentGateway from "./pages/PaymentGateway.jsx";
 
 createRoot(document.getElementById("root")).render(
     <StrictMode>
@@ -31,6 +33,10 @@ createRoot(document.getElementById("root")).render(
                             <Route path="/" element={<App />}></Route>
                             <Route path="/test-product" element={<ProductDescriptionPage />} />
                             <Route path="/test-checkout" element={<CheckoutPage />} />
+                            
+                            <Route path="/payment" element={<PaymentGateway />} />
+
+
                             <Route
                                 path="/products"
                                 element={

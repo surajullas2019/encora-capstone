@@ -4,7 +4,7 @@ export default function OrderHistoryPage() {
             <h2 className="text-2xl font-bold mb-4">Order History</h2>
 
             <p className="text-base-content/60">
-                You haven't placed any orders yet.
+                Please integrate with backend apis
             </p>
         </div>
     );
